@@ -1,0 +1,456 @@
+﻿<%@ Page  Language="C#"  Title="MOPLog's dashboard"  AutoEventWireup="true" CodeBehind="Dashboard.aspx.cs" Inherits="Mope.Dashboard" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+<%@ Register Assembly="System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" Namespace="System.Web.UI" TagPrefix="asp" %>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!-- Head -->
+<head runat="server">
+    <meta charset="utf-8" /> 
+        <title>MOPLog's Dashboard</title>
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
+
+    <!--Basic Styles-->
+    <link href="css/bootstrap.min.css" rel="stylesheet" /> 
+    <link href="css/font-awesome.min.css" rel="stylesheet" />
+    <link href="css/weather-icons.min.css" rel="stylesheet" />
+
+    <!--Fonts-->
+    <%--<link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300" rel="stylesheet" type="text/css">--%>
+
+    <!--Mope Manager styles-->
+    <link href="css/dibaw.min.css" rel="stylesheet" />
+    <link href="css/dem.min.css" rel="stylesheet" />
+    <link href="css/typicons.min.css" rel="stylesheet" />
+    <link href="css/animate.min.css" rel="stylesheet" /> 
+
+    <!--Skin Script -->
+    <script type="text/javascript" src="js/skins.min.js"></script>
+     
+    </head>
+<!-- /Head -->
+    <body>
+        <form runat="server"   >  
+
+         <!-- Navbar -->
+            <div class="navbar">
+        <div class="navbar-inner">
+            <div class="navbar-container">
+                <!-- Navbar Brand -->
+                <div class="navbar-header pull-left">
+                    <a href="../Default.aspx" class="navbar-brand">
+                        <small>
+                            <img src="img/logo.png" alt="" />
+                        </small>
+                    </a>
+                </div>
+                <!-- /Navbar Brand -->
+                <!-- Sidebar Collapse -->
+                <div class="sidebar-collapse" id="sidebar-collapse">
+                    <i class="collapse-icon fa fa-bars"></i>
+                </div>
+                <!-- /Sidebar Collapse -->
+                <!-- Account Area and Settings --->
+                <div class="navbar-header pull-right">
+                    <div class="navbar-account">
+                        <ul class="account-area">
+                        
+                           <li>
+                           
+                                <a class="dropdown-toggle"  title="Logout" onclick="bootbox.confirm({ message: 'Voulez-vous vraiment quitter votre session  ?' , callback: function (result) { if (result) { __doPostBack('Disconnect'); } }, title: app_name})">
+                                    <i class="icon fa fa-sign-out" style="font-size: 27px;cursor:pointer"></i>
+                                </a>
+                                
+                                
+                            </li>
+
+                             
+                            <li>
+                                <a class="login-area dropdown-toggle" data-toggle="dropdown">
+                                <div class="iconfa" title="View my data">
+                                        <i class="icon fa fa-user" ></i>
+                                    </div>
+
+                                    <section>
+                                        <h2><span class="profile"><span><%= _userProfile %> </span></span></h2>
+                                    </section>
+                                </a>
+                                <!--Login Area Dropdown-->
+                                <!--Notification Dropdown-->
+                                <ul class="pull-right dropdown-menu dropdown-arrow dropdown-messages">
+                                    
+                                   <li>
+                                        <a href="#">
+                                        <i class="icon fa fa-user message-avatar" style="font-size: 27px;"></i>
+                                             <div class="message">
+                                                <span class="message-sender">
+                                                    <%= _userFullName %> 
+                                                </span>
+                                                
+                                            <span class="message-body">
+                                                    Last login : <%= _userLastLogin%>  
+                                            </span>
+                                            <span class="message-body">
+                                                    From  :   <%= _userLastIp%>
+                                            </span>
+                                           </div>
+                                        </a>
+                                    </li>
+                                    
+                                    <li class="dropdown-footer">
+                                        <a href="#">
+                                            Edit my Profile
+                                        </a>
+                                    </li>
+
+
+                                </ul>
+                                <!--/Notification Dropdown-->
+                            </li>
+                            <!-- /Account Area --> 
+                            <!-- Settings -->
+                        </ul>
+                        <div class="setting">
+                            <a id="btn-setting" title="Settings" href="#">
+                                <i class="icon glyphicon glyphicon-cog"></i>
+                            </a>
+                        </div><div class="setting-container">
+                            <label>
+                                <input type="checkbox" id="checkbox_fixednavbar">
+                                <span class="text">Fixed Navbar</span>
+                            </label>
+                            <label>
+                                <input type="checkbox" id="checkbox_fixedsidebar">
+                                <span class="text">Fixed SideBar</span>
+                            </label>
+                            <label>
+                                <input type="checkbox" id="checkbox_fixedbreadcrumbs">
+                                <span class="text">Fixed BreadCrumbs</span>
+                            </label>
+                            <label>
+                                <input type="checkbox" id="checkbox_fixedheader">
+                                <span class="text">Fixed Header</span>
+                            </label>
+                        </div>
+                        <!-- Settings -->
+                    </div>
+                </div>
+                <!-- /Account Area and Settings -->
+            </div>
+        </div>
+    </div>
+         <!-- /Navbar -->
+
+             <div class="main-container container-fluid">
+        <!-- Page Container -->
+        <div class="page-container">
+            <!-- Page Sidebar -->
+              <div class="page-sidebar" id="sidebar">
+            <!-- Page Sidebar Header-->
+                <div class="sidebar-header-wrapper">
+                    <input type="text" class="searchinput" />
+                    <i class="searchicon fa fa-search" onclick="javascript: alert('module de recherche à mettre en place'); return false;"></i>
+                    <div class="searchhelper">Rechercher des mops...</div>
+                </div>
+            <!-- /Page Sidebar Header -->               
+                <!-- Sidebar Menu -->
+                  <asp:Literal ID="MenuLiteral" runat="server"></asp:Literal>
+                <!-- /Sidebar Menu -->
+             </div>            
+            <!-- /Page Sidebar -->
+            <!-- Page Content -->
+            <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <!-- Not needed for the default page -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>
+                        <a href="Default.aspx">Home</a>
+                    </li> 
+                    <li>
+                        <a href="#">Administration</a>
+                    </li>
+                    <li class="active">
+                            Home 
+                    </li>       
+                </ul> 
+            </div>
+            <!-- /Page Breadcrumb -->
+                <!-- Page Header -->
+                <div class="page-header position-relative">
+                    <div class="header-title">
+                        <h1>
+                            Dashboard
+                        </h1>
+                    </div>
+                    <!--Header Buttons-->
+                    <div class="header-buttons">
+                        <a class="sidebar-toggler" title ="Hide the left sidebar" href="#">
+                            <i class="fa fa-arrows-h"></i>
+                        </a>
+                        <a class="refresh" id="refresh-toggler" title="Refresh the page" href="">
+                            <i class="glyphicon glyphicon-refresh"></i>
+                        </a>
+                        <a class="fullscreen" id="fullscreen-toggler" title ="Full screen" href="#">
+                            <i class="glyphicon glyphicon-fullscreen"></i>
+                        </a>
+                    </div>
+                    <!--Header Buttons End-->
+                </div>
+                <!-- /Page Header -->
+                <!-- Page Body -->
+                <div class="page-body">
+                    <%--<br />--%>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                              <div class="databox databox-lg databox-inverted radius-bordered databox-shadowed databox-graded databox-vertical" style="height:165px">
+                                        <div class="databox-top no-padding" style="height:115px">
+                                            <img src="img/temp11.png" alt="Electoral Affairs Division Transportation Support" style="height:115px; width:100%;" />
+                                        </div>
+                                        <div class="databox-bottom no-padding bordered-thick bordered-orange">
+                                            <div class="databox-row" style=" margin-top: 5px; ">
+                                                <div class="databox-cell cell-4 no-padding text-align-center bordered-right bordered-platinum">
+                                                    <span class="databox-number lightcarbon no-margin" style="font-size:20px" ><%= TotTrpTrav %></span>
+                                                    <span class="databox-text sonic-silver  no-margin">Passengers transported</span>
+                                                </div>
+                                                <div class="databox-cell cell-4 no-padding text-align-center bordered-right bordered-platinum">
+                                                    <span class="databox-number lightcarbon no-margin"><%= TotTrpKg %> KG</span>
+                                                    <span class="databox-text sonic-silver no-margin">Cargos transported</span>
+                                                </div>
+                                                <div class="databox-cell cell-4 no-padding text-align-center">
+                                                    <span class="databox-number lightcarbon no-margin"><%= TotTrpCum %> Cum</span>
+                                                    <span class="databox-text sonic-silver no-margin">Cargos transported</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <div class="row">
+                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                 <div class="databox databox-xxlg databox-vertical databox-inverted" style="height:auto">
+                             <div class="databox-top bg-white no-padding" style="height:auto">
+                <div class="databox-row row-2 no-padding" style="background-color:rgb(172, 180, 192)"><%-- bg-gold --%>
+                    <div class="databox-cell cell-1 text-align-center no-padding padding-top-5">
+                        <span class="databox-number white"><i class="fa fa-bar-chart-o no-margin"></i></span>
+                    </div>
+                    <div class="databox-cell cell-8 no-padding padding-top-5 text-align-left">
+                        <span class="databox-number white">PROCESSED MOPS & CMR REQUESTS</span>
+                    </div>
+                    <div class="databox-cell cell-3 text-align-right padding-10">
+                        <span class="databox-text white" style="font-size:11px;margin:4px 0 2px;"><%= StrMonth %></span>
+                    </div>
+                </div>
+                <div class="databox-row row-3">
+                    <div class="databox-cell cell-6 no-padding padding-10 padding-left-20 text-align-left">
+                        <span class="databox-number orange no-margin"><%= TotProcessMop %></span>
+                        <span class="databox-text sky no-margin" style="font-size:11px;margin:4px 0 2px;">OVERALL PROCESSED MOPS</span>
+                    </div>
+                    <div class="databox-cell cell-2 no-padding padding-10 text-align-left">
+                        <span class="databox-number orange no-margin"><%= LastMonthProcessMop %></span>
+                        <span class="databox-text darkgray no-margin" style="font-size:11px;margin:4px 0 2px;">LAST MONTH</span>
+                    </div>
+                    <div class="databox-cell cell-2 no-padding padding-10 text-align-left">
+                        <span class="databox-number orange no-margin"><%= CurrentweekProcessMop %></span>
+                        <span class="databox-text darkgray no-margin" style="font-size:11px;margin:4px 0 2px;">THIS WEEK</span>
+                    </div>
+                    <div class="databox-cell cell-2 no-padding padding-10 text-align-left">
+                        <span class="databox-number orange no-margin"><%= todayProcessMop %></span>
+                        <span class="databox-text darkgray no-margin" style="font-size:11px;margin:4px 0 2px;">TODAY</span>
+                    </div>
+                </div>
+                <div class="databox-row row-3">
+                                    <div class="databox-cell cell-6 no-padding padding-10 padding-left-20 text-align-left">
+                                        <span class="databox-number orange no-margin"><%= TotProcessCmr %></span>
+                                        <span class="databox-text sky no-margin" style="font-size:11px;margin:4px 0 2px;">OVERALL PROCESSED CMRS</span>
+                                    </div>
+                                    <div class="databox-cell cell-2 no-padding padding-10 text-align-left">
+                                        <span class="databox-number orange no-margin"><%= LastMonthProcessCmr %></span>
+                                        <span class="databox-text darkgray no-margin" style="font-size:11px;margin:4px 0 2px;">LAST MONTH</span>
+                                    </div>
+                                    <div class="databox-cell cell-2 no-padding padding-10 text-align-left">
+                                        <span class="databox-number orange no-margin"><%= CurrentweekProcessCmr %></span>
+                                        <span class="databox-text darkgray no-margin" style="font-size:11px;margin:4px 0 2px;">THIS WEEK</span>
+                                    </div>
+                                    <div class="databox-cell cell-2 no-padding padding-10 text-align-left">
+                                        <span class="databox-number orange no-margin"><%= todayProcessCmr %></span>
+                                        <span class="databox-text darkgray no-margin" style="font-size:11px;margin:4px 0 2px;">TODAY</span>
+                                    </div>
+                                </div>
+            </div> 
+                         </div>
+                             </div> 
+                            </div> 
+                        </div> 
+                    </div> 
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="dashboard-box">
+                    <div class="box-header">
+                        <div class="deadline">
+                            Statistics at a glance
+                        </div>
+                    </div>
+                    <div class="box-progress"> 
+                        <div class="progress progress-xs progress-no-radius bg-whitesmoke">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 50%">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-tabbs">
+                        <div class="tabbable">
+                            <ul class="nav nav-tabs tabs-flat  nav-justified" id="myTab11">
+                                  <li class="active">
+                                    <a data-toggle="tab" href="#stats">
+                                        Statistics
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="loading-container">
+                                 <div class="loader"></div>
+                            </div>
+                            <div class="tab-content tabs-flat no-padding"> 
+                                <div id="stats" class="tab-pane animated active fadeInUp " style="padding:20px 20px 0 20px;">
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                            <div class="databox databox-xlg databox-vertical databox-inverted databox-shadowed">
+                                                <div class="databox-top">
+                                                    <div class="databox-sparkline">
+                                                         <canvas id="bar"  height="140"  width="230"></canvas>
+                                                    </div>
+                                                </div>
+                                                <div class="databox-bottom no-padding text-align-center">
+                                                    <span class="databox-number lightcarbon no-margin">  <%= AvrgTravChart %></span>
+                                                    <span class="databox-text lightcarbon no-margin" style="font-size:11px;margin:4px 0 2px;">Average of travellers / Month in <%= strYear %>
+
+                                                    </span>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                            <div class="databox databox-xlg databox-vertical databox-inverted databox-shadowed">
+                                                <div class="databox-top">
+                                                    <div class="databox-sparkline">
+                                                         <canvas id="line"  height="140"  width="230"></canvas>
+                                                    </div>
+                                                </div>
+                                                <div class="databox-bottom no-padding text-align-center">
+                                                    <span class="databox-number lightcarbon no-margin"> <%= AvrgCargoChart %> Kg</span>
+                                                    <span class="databox-text lightcarbon no-margin" style="font-size:11px;margin:4px 0 2px;">Average of Cargo Transported / Month in <%= strYear %></span>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                            <div class="databox databox-xlg databox-vertical databox-inverted databox-shadowed">
+                                                <div class="databox-top">
+                                                    <div class="databox-piechart">
+                                                        <div data-toggle="easypiechart" class="easyPieChart block-center"
+                                                                data-barcolor="themeprimary" data-linecap="butt" data-percent="<%= PctMopBeingProcess %>" data-animate="3000"
+                                                                data-linewidth="8" data-size="125" data-trackcolor="#eee">
+                                                            <span class="font-200"><i class="fa fa-plane themeprimary"></i></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="databox-bottom no-padding text-align-center">
+                                                    <span class="databox-number lightcarbon no-margin"> <%= MopBeingProcess %></span>
+                                                    <span class="databox-text lightcarbon no-margin" style="font-size:11px;margin:4px 0 2px;"> Mops requests being processed over <b><%= TotalPendingMop %></b> MOPs</span>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                            <div class="databox databox-xlg databox-vertical databox-inverted  databox-shadowed">
+                                                <div class="databox-top">
+                                                    <div class="databox-piechart">
+                                                        <div data-toggle="easypiechart" class="easyPieChart block-center"
+                                                                data-barcolor="themeprimary" data-linecap="butt" data-percent="<%= PctCmrBeingProcess %>" data-animate="3000"
+                                                                data-linewidth="8" data-size="125" data-trackcolor="#eee">
+                                                            <span class="white font-200"><i class="fa fa-plane themeprimary"></i></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="databox-bottom no-padding text-align-center">
+                                                    <span class="databox-number lightcarbon no-margin"><%= CmrBeingProcess %></span>
+                                                    <span class="databox-text lightcarbon no-margin" style="font-size:11px;margin:4px 0 2px;">CMRequests being processed over <b><%= TotalPendingCmr %></b> CMRs</span>
+
+                                                </div>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div> 
+                    </div> 
+                </div>
+                <!-- /Page Body -->
+            </div>
+            <!-- /Page Content -->
+        </div>
+        <!-- /Page Container -->
+        <!-- Main Container -->
+
+    </div>
+
+  
+    <!--Basic Scripts-->
+    <script type="text/javascript" src="js/jquery-2.1.3.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/slimscroll/jquery.slimscroll.min.js"></script> 
+
+    <!--Mope Manager Scripts-->
+    <script  type="text/javascript" src="js/dibaw.js"></script>
+    <script   type="text/javascript" src="js/bootbox.js"></script>
+    <script type="text/javascript"  src="js/doAppmin.js"></script>
+    <%--<script>
+        $(document).ready(function () { $("#sidebar").toggleClass("hide"); });
+    </script>--%>
+
+    <!--Page Related Scripts-->
+    <!--Sparkline Charts Needed Scripts-->
+    <script  type="text/javascript" src="js/charts/sparkline/jquery.sparkline.js"></script>
+    <script  type="text/javascript" src="js/charts/sparkline/sparkline-init.js"></script>
+
+    <!--Easy Pie Charts Needed Scripts-->
+    <script  type="text/javascript" src="js/charts/easypiechart/jquery.easypiechart.js"></script>
+    <script  type="text/javascript" src="js/charts/easypiechart/easypiechart-init.js"></script>
+    
+    <!--Easy Charts JS Needed Scripts-->                                                       
+    <script  type="text/javascript"  src="js/charts/chartjs/Chart.js"></script>
+    <script  type="text/javascript"  src="js/charts/chartjs/chartjs-init.js"></script>
+
+
+    <script  type="text/javascript" >
+         
+        $(window).bind("load", function () { 
+            /*Sets Themed Colors Based on Themes*/
+            themeprimary = getThemeColorFromCss('themeprimary');
+            themesecondary = getThemeColorFromCss('themesecondary');
+            themethirdcolor = getThemeColorFromCss('themethirdcolor');
+            themefourthcolor = getThemeColorFromCss('themefourthcolor');
+            themefifthcolor = getThemeColorFromCss('themefifthcolor');
+            InitiateSparklineCharts.init();
+            InitiateEasyPieChart.init();
+            InitiateChartJS.init([<%= TravChartData %>], [<%= CargChartData %>], "dash");
+        });
+
+    </script>
+        </form>
+    </body>
+</html>
+
+ 

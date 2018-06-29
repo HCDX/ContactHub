@@ -1,0 +1,20 @@
+Title: Mope
+Message: LA RÉFÉRENCE D'OBJET N'EST PAS DÉFINIE À UNE INSTANCE D'UN OBJET.
+StackTrace:    à Mope.Dashboard.Page_Load(Object sender, EventArgs e) dans c:\Users\PRINCE A. Joanès\Documents\Visual Studio 2013\Projects\Mop\Mope\Dashboard.aspx.cs:ligne 70
+Date/Time: 12/03/2018 17:46:01
+================================================
+Title: Mope
+Message: LA RÉFÉRENCE D'OBJET N'EST PAS DÉFINIE À UNE INSTANCE D'UN OBJET.
+StackTrace:    à Mope.Dashboard.Page_Load(Object sender, EventArgs e) dans c:\Users\PRINCE A. Joanès\Documents\Visual Studio 2013\Projects\Mop\Mope\Dashboard.aspx.cs:ligne 70
+Date/Time: 13/03/2018 12:02:43
+================================================
+Title: Mope
+Message: LA RÉFÉRENCE D'OBJET N'EST PAS DÉFINIE À UNE INSTANCE D'UN OBJET.
+StackTrace:    à Mope.Dashboard.Page_Load(Object sender, EventArgs e) dans c:\Users\PRINCE A. Joanès\Documents\Visual Studio 2013\Projects\Mop\Mope\Dashboard.aspx.cs:ligne 70
+Date/Time: 13/03/2018 12:03:02
+================================================
+Title: Mope
+Message: LA RÉFÉRENCE D'OBJET N'EST PAS DÉFINIE À UNE INSTANCE D'UN OBJET.
+StackTrace:    à Mope.Dashboard.Page_Load(Object sender, EventArgs e) dans c:\Users\PRINCE A. Joanès\Documents\Visual Studio 2013\Projects\Mop\Mope\Dashboard.aspx.cs:ligne 70
+Date/Time: 13/03/2018 12:07:04
+================================================

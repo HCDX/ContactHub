@@ -1,0 +1,247 @@
+﻿using System;
+using System.Collections;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Xml.Linq;
+using layers;
+using System.Text;
+using System.Globalization;
+
+namespace Mope
+{
+    public partial class Dashboard : System.Web.UI.Page
+    {
+        public string _userFullName = string.Empty,
+                     _userProfile = string.Empty,
+                     _userLastLogin = string.Empty,
+                     _userLastIp =  string.Empty,
+                    TotTrpTrav = "0",
+                    TotTrpKg = "0",
+                    TotTrpCum = "0",
+                    TotProcessMop = "0",
+                    LastMonthProcessMop = "0",
+                    CurrentweekProcessMop = "0",
+                    todayProcessMop = "0",
+                    TotProcessCmr = "0",
+                    LastMonthProcessCmr = "0",
+                    CurrentweekProcessCmr = "0",
+                    todayProcessCmr = "0",
+                    TravChartData = string.Empty,
+                    AvrgTravChart = "0",
+                    CargChartData = string.Empty,
+                    AvrgCargoChart = "0",
+                    MopBeingProcess = "0",
+                    CmrBeingProcess = "0",
+                    TotalPendingCmr = "0",
+                    TotalPendingMop = "0",
+                    PctMopBeingProcess = "0",
+                    PctCmrBeingProcess = "0",
+                    StrMonth = string.Empty ,
+                    strYear  = string.Empty ;
+
+        private static BLL.USER usr;
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+
+            CultureInfo ci = new CultureInfo("en-US");
+            ClientScript.GetPostBackEventReference(this, string.Empty);
+            
+            if (Request.Form["__EVENTTARGET"] == "Disconnect")
+            {
+                //call the method 
+                Disconnect();
+            }
+
+            if (!IsPostBack)
+            {
+                usr = (BLL.USER)HttpContext.Current.Session["User"];
+                
+                    try
+                    {
+                        DataTable oDataTable = new DataTable();
+                        oDataTable = BLL.Main.Liste.ROLEMENUS(HttpContext.Current.Session["Roles"].ToString());
+                        DataRow[] drParentMenu = oDataTable.Select("UMANMenu_parent_id = 0");
+                        var oStringBuilder = new StringBuilder();
+
+                        string MenuList = GenerateMenu(drParentMenu, oDataTable, oStringBuilder);
+
+                        MenuLiteral.Text = MenuList;
+                    }
+                    catch (Exception ex)
+                    {
+                        Tools.erreur(ex);
+                    }  
+
+            }
+
+            if (!(usr == null))
+            {
+                _userFullName = usr._UMANUsers_firstName + " " + usr._UMANUsers_lastName;
+                _userProfile = usr._UMANUsers_displayName;
+                _userLastLogin = usr._USERLastLogin;
+                _userLastIp = usr._USERLastIp;
+
+                DataTable d = null;
+               d = BLL.Main.Liste.DPKOSTAT();
+                try
+                {
+                    var format = "MMMM dd, yyyy";
+                    if (d != null && d.Rows.Count > 0)
+                    {
+                        TotTrpTrav = d.Rows[0]["TotTrpTrav"].ToString();
+                        TotTrpKg = d.Rows[0]["TotTrpKg"].ToString();
+                        TotTrpCum = d.Rows[0]["TotTrpCum"].ToString();
+                        TotProcessMop = d.Rows[0]["TotProcessMop"].ToString();
+                        LastMonthProcessMop = d.Rows[0]["LastMonthProcessMop"].ToString();
+                        CurrentweekProcessMop = d.Rows[0]["CurrentweekProcessMop"].ToString();
+                        todayProcessMop = d.Rows[0]["todayProcessMop"].ToString();
+                        TotProcessCmr = d.Rows[0]["TotProcessCmr"].ToString();
+                        LastMonthProcessCmr = d.Rows[0]["LastMonthProcessCmr"].ToString();
+                        CurrentweekProcessCmr = d.Rows[0]["CurrentweekProcessCmr"].ToString();
+                        todayProcessCmr = d.Rows[0]["todayProcessCmr"].ToString();
+                        TravChartData = d.Rows[0]["TravChartData"].ToString();
+                        AvrgTravChart = d.Rows[0]["AvrgTravChart"].ToString();
+                        CargChartData = d.Rows[0]["CargChartData"].ToString();
+                        AvrgCargoChart = d.Rows[0]["AvrgCargoChart"].ToString();
+                        MopBeingProcess = d.Rows[0]["MopBeingProcess"].ToString();
+                        CmrBeingProcess = d.Rows[0]["CmrBeingProcess"].ToString();
+                        TotalPendingCmr = d.Rows[0]["TotalPendingCmr"].ToString();
+                        TotalPendingMop = d.Rows[0]["TotalPendingMop"].ToString();
+                        PctMopBeingProcess = d.Rows[0]["PctMopBeingProcess"].ToString();
+                        PctCmrBeingProcess = d.Rows[0]["PctCmrBeingProcess"].ToString();
+                        StrMonth = DateTime.Now.ToString(format,ci).ToUpper();
+                        strYear = DateTime.Now.Year.ToString();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Tools.erreur(ex);
+                }
+
+            }
+            if (usr == null)
+            {
+                Disconnect();
+            }
+
+
+        }
+        private void Disconnect()
+        {
+            try
+            {
+                FormsAuthentication.SignOut();
+                BLL.Main.current_user = string.Empty;
+                HttpContext.Current.Session["User"] = null;
+                HttpContext.Current.Response.Redirect("~/login.aspx", false);
+
+            }
+            catch (Exception ex)
+            {
+                Tools.erreur(ex);
+            }
+
+
+        }
+
+        private string GenerateMenu(DataRow[] drParentMenu, DataTable oDataTable, StringBuilder oStringBuilder)
+        {
+
+            if (drParentMenu.Length > 0)
+            {
+                DataRow drCheck = drParentMenu.FirstOrDefault(s => s["UMANMenu_parent_id"].ToString() == "0");
+                if (drCheck != null)
+                {
+                    string id = drCheck["UMANMenu_parent_id"].ToString();
+                    oStringBuilder.Append("<ul class='nav sidebar-menu'>");
+                }
+                else
+                {
+                    oStringBuilder.Append("<ul class='submenu'>");
+                }
+                foreach (DataRow dr in drParentMenu)
+                {
+                    string MenuURL = dr["UMANMenu_url"].ToString();
+                    string MenuName = dr["UMANMenu_name"].ToString();
+                    string MenuFonticon = dr["UMANMenu_fonticon"].ToString();
+                    string ParentID = dr["UMANMenu_parent_id"].ToString();
+                    string line = string.Empty;
+                    if (int.Parse(ParentID) == 0)
+                    {
+                        if (!HasChild(int.Parse(dr["UMANMenu_id"].ToString())))
+                        {
+                            line = String.Format(@"<li><a href=""{0}"" class='menu-dropdown'> <i class=""{1}""></i><span class=""menu-text"">{2}</span></a>", MenuURL, MenuFonticon, MenuName);
+                        }
+                        else
+                        {
+                            line = String.Format(@"<li><a href=""{0}"" class='menu-dropdown'> <i class=""{1}""></i><span class=""menu-text"">{2}</span><i class=""menu-expand""></i></a>", MenuURL, MenuFonticon, MenuName);
+                        } 
+                    }
+                    else
+                    {
+                        if (HasChild(int.Parse(dr["UMANMenu_id"].ToString())))
+                        {
+                            line = String.Format(@"<li><a href=""{0}"" class='menu-dropdown'> <i class=""{1}""></i><span class=""menu-text"">{2}</span><i class=""menu-expand""></i></a>", MenuURL, MenuFonticon, MenuName);
+                        }
+                        else
+                        {
+                            line = String.Format(@"<li><a href=""{0}""> <i class=""{1}""></i><span class=""menu-text"">{2}</span></a>", MenuURL, MenuFonticon, MenuName);
+                        }
+                    }
+
+                    oStringBuilder.Append(line);
+                    string MenuID = dr["UMANMenu_id"].ToString();
+                    DataRow[] subMenu = oDataTable.Select(String.Format("UMANMenu_parent_id = {0}", MenuID));
+                    if (subMenu.Length > 0 && !MenuID.Equals(ParentID))
+                    {
+                        var subMenuBuilder = new StringBuilder();
+                        oStringBuilder.Append(GenerateMenu(subMenu, oDataTable, subMenuBuilder));
+                    }
+                    oStringBuilder.Append("</li>");
+                }
+            }
+            oStringBuilder.Append("</ul>");
+            return oStringBuilder.ToString();
+        }
+
+        public bool HasChild(int idmenu)
+        {
+            DataTable result = null;
+            bool has_submenu = false;
+
+            try
+            {
+                result = (DataTable)Tools.ExecutePS("PS_TRT_MENU", true, 10, "", idmenu);
+                if (result.Rows.Count > 0)
+                {
+                    int nbr = int.Parse(result.Rows[0][0].ToString());
+                    if (nbr > 0)
+                    {
+                        has_submenu = true;
+                        return has_submenu;
+                    }
+                }
+                else
+                {
+                    return has_submenu;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Tools.erreur(ex);
+                return false;
+            }
+
+            return has_submenu;
+        }
+    }
+}
