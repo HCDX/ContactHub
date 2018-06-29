@@ -10,4 +10,11 @@ Please follow the below to customize the application
 
 2. Go to line 36 App_Code/clsEmail.cs. Add your email address and its name from which the email will be sent. In the same page, go to line 43 and enter your network username and password. In my case, I used SendGrid which is a good system. Check SendGrid price and offers from https://sendgrid.com/. You can also access SendGrid plattform using your Microsoft Azure account.
 
-3. Go to line 684 on Subcription
+3. Go to lines 647 and 682 on Subscription.aspx.cs, add your email address and its name from which the email will be sent to subscriber or users. After that go to the lines 342 and 389 to add your web folder URL (e.g http://myserver/myfolder/)
+
+
+4. Go to line 1095 on ContactList.aspx.cs, add your email address and its name from which the email will be sent to subscriber or users.
+
+After these configuration, your need to setup your database in MS SQL Server and also you need to create your library (DLL).
+
+For any questions or suggestions aiming to improve this application. Please feel free to send a message.
