@@ -15,6 +15,6 @@ Please follow the steps below to customize the application
 
 4. Go to line 1095 on ContactList.aspx.cs, add your email address and its name from which the email will be sent to subscriber or users.
 
-After these configuration, your need to setup your database in MS SQL Server and also you need to create your library (DLL).
+After these configurations, your need to setup your database in MS SQL Server and also you need to create your library (DLL).
 
 For any questions or suggestions aiming to improve this application. Please feel free to send a message.
